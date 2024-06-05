@@ -7,25 +7,45 @@ import { useTheme } from '@/theme';
 import TextField from '@/components/atoms/TextField/TextField';
 import TextButton from '@/components/atoms/TextButton/TextButton';
 import { SafeScreen } from '@/components/template';
+import { Brand } from '@/components/molecules';
+import ImageVariant from '@/components/atoms/ImageVariant/ImageVariant';
 
 interface LoginProps {
   navigation: any;
 }
 
 const Login: React.FC<LoginProps> = ({ navigation }) => {
+
+  const onChangeTheme = () => {
+		changeTheme(variant === 'default' ? 'dark' : 'default');
+	};
+
+  const {
+		colors,
+		variant,
+		changeTheme,
+		layout,
+		gutters,
+		fonts,
+		components,
+		backgrounds,
+	} = useTheme();
+
+
   const { t } = useTranslation();
-  const { colors, gutters, fonts } = useTheme();
+  // const { colors, gutters, fonts } = useTheme();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
+    navigation.navigate('Home')
     // Handle login logic here
   };
 
   return (
     <SafeScreen>
       <View style={[styles.container, gutters.paddingHorizontal_32]}>
-        <Text style={[styles.title, { color: colors.gray800 }]}>Hi login</Text>
+        <Brand></Brand>
         <TextField
           placeholder="User Name"
           value={username}
@@ -38,12 +58,24 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
           secureTextEntry
         />
         <TouchableOpacity
-          style={[styles.button, { backgroundColor: colors.purple50 }]}
+          style={[styles.button, { backgroundColor: colors.red500 }]}
           onPress={handleLogin}
         >
-          <Text style={[styles.buttonText, { color: colors.red500 }]}>"Login"</Text>
+          <Text style={[styles.buttonText, { color: "white" }]}>Login</Text>
         </TouchableOpacity>
-        <TextButton title="Sign Up" onPress={() => navigation.navigate('SignUp')} />
+        <TextButton title="Sign Up" 
+        onPress={	() => {
+            console.log("Hit")
+            navigation.navigate('SignUp')
+        }
+        } 
+        />
+        						<TouchableOpacity
+							testID="change-theme-button"
+							style={[components.buttonCircle, gutters.marginBottom_16]}
+							onPress={() => onChangeTheme()}
+						>
+						</TouchableOpacity>
       </View>
     </SafeScreen>
   );

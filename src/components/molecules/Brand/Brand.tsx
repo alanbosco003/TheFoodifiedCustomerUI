@@ -1,11 +1,13 @@
 import { View, DimensionValue } from 'react-native';
 
-import LogoLight from '@/theme/assets/images/tom_light.png';
-import LogoDark from '@/theme/assets/images/tom_dark.png';
+import LogoLight from '@/theme/assets/images/logo.png';
+import LogoDark from '@/theme/assets/images/logo.png';
 
 import { ImageVariant } from '@/components/atoms';
 import { useTheme } from '@/theme';
 import { isImageSourcePropType } from '@/types/guards/image';
+
+
 
 type Props = {
 	height?: DimensionValue;

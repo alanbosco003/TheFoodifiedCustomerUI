@@ -14,11 +14,10 @@ const TextButton: React.FC<TextButtonProps> = ({ title, onPress }) => {
 
   return (
     <TouchableOpacity onPress={onPress}>
-      <Text style={[styles.text, { color: colors.purple100 }]}>{title}</Text>
+      <Text style={[styles.text, { color: colors.red500 }]}>{title}</Text>
     </TouchableOpacity>
   );
 };
-
 const styles = StyleSheet.create({
   text: {
     fontSize: 16,

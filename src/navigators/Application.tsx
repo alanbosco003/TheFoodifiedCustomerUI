@@ -6,6 +6,8 @@ import { useTheme } from '@/theme';
 
 import type { ApplicationStackParamList } from '@/types/navigation';
 import Login from '@/screens/Login/Login';
+import SignUp from '@/screens/SignUp/SignUp';
+import Menu from '@/screens/Menu/Menu';
 
 const Stack = createStackNavigator<ApplicationStackParamList>();
 
@@ -16,7 +18,9 @@ function ApplicationNavigator() {
 		<NavigationContainer theme={navigationTheme}>
 			<Stack.Navigator key={variant} screenOptions={{ headerShown: false }}>
 				<Stack.Screen name="Startup" component={Startup} />
-				<Stack.Screen name="Example" component={Login} />
+				<Stack.Screen name="Login" component={Login} />
+				<Stack.Screen name="SignUp" component={SignUp} />
+				<Stack.Screen name="Home" component={Menu} />
 			</Stack.Navigator>
 		</NavigationContainer>
 	);
