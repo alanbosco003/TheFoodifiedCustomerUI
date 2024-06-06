@@ -4,28 +4,23 @@ import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
 import { useTheme } from '@/theme';
 import { SafeScreen } from '@/components/template';
-import Carousel from 'react-native-snap-carousel';
 import LogoLight from '@/theme/assets/images/food/foodImage1.jpeg';
-import CustomCarousel from '@/components/molecules/Slider/CustomCarousel';
 import AppBar from '@/components/molecules/AppBar/AppBar';
 
+import RestaurantHeader from '@/components/molecules/MenuHeader/MenuHeader';
+import AutoScrollingList from '@/components/molecules/AutoScrollinglist/AutoScrollingList';
+
+
 const carouselData = [
-    {
-      id: '1',
-      image: LogoLight,
-      title: 'Carousel Item 1',
-    },
-    {
-      id: '2',
-      image: LogoLight,
-      title: 'Carousel Item 2',
-    },
-    // Add more items as needed
-  ];
+  LogoLight,
+  LogoLight,
+  LogoLight,
+  // Add more items as needed
+];
 
 interface MenuItem {
   id: string;
-  image: string;
+  image: number; // Change the type to match the image resource ID type
   title: string;
   description: string;
   price: string;
@@ -34,28 +29,14 @@ interface MenuItem {
 const menuItems: MenuItem[] = [
   {
     id: '1',
-    image: "LogoLight", // Ensure this path is correct and the image exists
+    image: LogoLight,
     title: 'Pizza',
     description: 'Delicious cheese pizza',
     price: '$10',
   },
   {
     id: '2',
-    image: "LogoLight", // Ensure this path is correct and the image exists
-    title: 'Burger',
-    description: 'Juicy beef burger',
-    price: '$8',
-  },
-  {
-    id: '1',
-    image: "LogoLight", // Ensure this path is correct and the image exists
-    title: 'Pizza',
-    description: 'Delicious cheese pizza',
-    price: '$10',
-  },
-  {
-    id: '2',
-    image: "LogoLight", // Ensure this path is correct and the image exists
+    image: LogoLight,
     title: 'Burger',
     description: 'Juicy beef burger',
     price: '$8',
@@ -68,7 +49,7 @@ const Menu = () => {
 
   const renderMenuItem = ({ item }: { item: MenuItem }) => (
     <View style={[styles.menuItem, gutters.marginBottom_16]}>
-      <Image source={LogoLight} style={styles.menuItemImage} />
+      <Image source={item.image} style={styles.menuItemImage} />
       <View style={styles.menuItemDetails}>
         <Text style={styles.menuItemTitle}>{item.title}</Text>
         <Text style={styles.menuItemDescription}>{item.description}</Text>
@@ -82,12 +63,16 @@ const Menu = () => {
     </View>
   );
 
-
   return (
     <SafeScreen>
-        {/* <AppBar />  */}
+      {/* <AppBar title="Sai Savour" /> */}
+      <RestaurantHeader
+        name="Sai Savour"
+        subtitle="Best food in town"
+        images={carouselData}
+      />
       <View style={styles.container}>
-      <CustomCarousel data={carouselData} />
+        <AutoScrollingList data={carouselData} />
         <FlatList
           data={menuItems}
           renderItem={renderMenuItem}
