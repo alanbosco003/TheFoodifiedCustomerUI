@@ -83,9 +83,9 @@ function Example() {
 						style={[layout.relative, backgrounds.gray100, components.circle250]}
 					/>
 
-					<View style={[layout.absolute, gutters.paddingTop_80]}>
+					{/* <View style={[layout.absolute, gutters.paddingTop_80]}>
 						<Brand height={300} width={300} />
-					</View>
+					</View> */}
 				</View>
 
 				<View style={[gutters.paddingHorizontal_32, gutters.marginTop_40]}>
