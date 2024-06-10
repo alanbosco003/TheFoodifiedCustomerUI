@@ -5,16 +5,30 @@ import { View, Text, Image, TouchableOpacity, StyleSheet, FlatList } from 'react
 import { useTheme } from '@/theme';
 import { SafeScreen } from '@/components/template';
 import LogoLight from '@/theme/assets/images/food/foodImage1.jpeg';
-import AppBar from '@/components/molecules/AppBar/AppBar';
+import Food1 from '@/theme/assets/images/food/foodImage1.jpeg';
+import Food2 from '@/theme/assets/images/food/foodImage2.jpeg';
+import Food3 from '@/theme/assets/images/food/foodImage3.jpeg';
+
 
 import RestaurantHeader from '@/components/molecules/MenuHeader/MenuHeader';
 import AutoScrollingList from '@/components/molecules/AutoScrollinglist/AutoScrollingList';
 
 
+const carouselDataCategory = [
+  LogoLight,
+  LogoLight,
+  LogoLight,
+  LogoLight,
+  LogoLight,
+  LogoLight,
+  LogoLight
+  // Add more items as needed
+];
+
 const carouselData = [
-  LogoLight,
-  LogoLight,
-  LogoLight,
+  Food1,
+  Food2,
+  Food3,
   // Add more items as needed
 ];
 
@@ -27,6 +41,20 @@ interface MenuItem {
 }
 
 const menuItems: MenuItem[] = [
+  {
+    id: '1',
+    image: LogoLight,
+    title: 'Pizza',
+    description: 'Delicious cheese pizza',
+    price: '$10',
+  },
+  {
+    id: '2',
+    image: LogoLight,
+    title: 'Burger',
+    description: 'Juicy beef burger',
+    price: '$8',
+  },
   {
     id: '1',
     image: LogoLight,
@@ -69,10 +97,10 @@ const Menu = () => {
       <RestaurantHeader
         name="Sai Savour"
         subtitle="Best food in town"
-        images={carouselData}
+        imagesList={carouselData}
       />
       <View style={styles.container}>
-        <AutoScrollingList data={carouselData} />
+        <AutoScrollingList data={carouselDataCategory} />
         <FlatList
           data={menuItems}
           renderItem={renderMenuItem}

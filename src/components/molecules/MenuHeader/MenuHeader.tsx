@@ -1,67 +1,57 @@
-// src/components/molecules/RestaurantHeader.tsx
-
-import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, Animated, Dimensions } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, Text, StyleSheet, FlatList, Image, Dimensions } from 'react-native';
 
 const { width } = Dimensions.get('window');
 
 interface HeaderProps {
   name: string;
   subtitle: string;
-  images: string[];
+  imagesList: any[];
 }
 
-const RestaurantHeader: React.FC<HeaderProps> = ({ name, subtitle, images }) => {
-  const scrollX = useRef(new Animated.Value(0)).current;
-  const flatListRef = useRef<FlatList<string>>(null);
+const RestaurantHeader: React.FC<HeaderProps> = ({ name, subtitle, imagesList }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const flatListRef = useRef<FlatList<any>>(null);
 
   useEffect(() => {
-    let isCancelled = false;
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex === imagesList.length - 1 ? 0 : prevIndex + 1));
+    }, 2000);
 
-    const startAutoScroll = () => {
-      if (!isCancelled) {
-        Animated.timing(scrollX, {
-          toValue: width * (images.length - 1),
-          duration: 5000 * (images.length - 1),
-          useNativeDriver: true,
-        }).start(() => {
-          if (!isCancelled) {
-            flatListRef.current?.scrollToIndex({ index: 0, animated: false });
-            startAutoScroll();
-          }
-        });
-      }
-    };
+    return () => clearInterval(interval);
+  }, [imagesList.length]);
 
-    startAutoScroll();
-
-    return () => {
-      isCancelled = true;
-      scrollX.stopAnimation();
-    };
-  }, [images, scrollX]);
+  useEffect(() => {
+    if (flatListRef.current) {
+      flatListRef.current.scrollToOffset({ offset: currentIndex * width, animated: true });
+    }
+  }, [currentIndex]);
 
   return (
     <View style={styles.container}>
       <Text style={styles.name}>{name}</Text>
       <Text style={styles.subtitle}>{subtitle}</Text>
-      <Animated.FlatList
+      <FlatList
         ref={flatListRef}
-        data={images}
+        data={imagesList}
         horizontal
+        pagingEnabled
         showsHorizontalScrollIndicator={false}
+        keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
           <View style={styles.imageContainer}>
-            <Image source={typeof item === 'string' ? { uri: item } : item} style={styles.image} />
+            <Image source={item} style={styles.image} />
           </View>
         )}
-        keyExtractor={(item, index) => index.toString()}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-          { useNativeDriver: true }
-        )}
-        scrollEventThrottle={16}
       />
+      <View style={styles.indicatorContainer}>
+        {imagesList.map((_, index) => (
+          <View
+            key={index}
+            style={[styles.indicator, { backgroundColor: index === currentIndex ? '#000' : '#ccc' }]}
+          />
+        ))}
+      </View>
     </View>
   );
 };
@@ -81,14 +71,26 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   imageContainer: {
-    width: width - 36, // 36 to account for padding
+    width: width - 36,
     height: 200,
-    paddingRight: 16,
+    marginRight: 16,
   },
   image: {
     width: '100%',
     height: '100%',
     borderRadius: 8,
+  },
+  indicatorContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 16,
+  },
+  indicator: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#ccc',
+    marginHorizontal: 4,
   },
 });
 

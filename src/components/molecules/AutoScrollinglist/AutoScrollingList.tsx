@@ -1,6 +1,4 @@
-// src/components/molecules/AutoScrollingList.tsx
-
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 import { View, FlatList, Image, StyleSheet, Dimensions, Animated, Easing } from 'react-native';
 
 const { width } = Dimensions.get('window');
@@ -12,42 +10,59 @@ interface AutoScrollingListProps {
 const AutoScrollingList: React.FC<AutoScrollingListProps> = ({ data }) => {
   const flatListRef = useRef<FlatList<number>>(null);
   const scrollX = useRef(new Animated.Value(0)).current;
+  const scrollSpeed = 50; // Adjust to control the scrolling speed
+  let isScrolling = useRef(true).current;
+
+  const animateScroll = useCallback(() => {
+    if (!isScrolling) return;
+
+    Animated.timing(scrollX, {
+      toValue: width * data.length,
+      duration: (width * data.length) / scrollSpeed * 1000,
+      easing: Easing.linear,
+      useNativeDriver: true,
+    }).start(({ finished }) => {
+      if (finished && isScrolling) {
+        scrollX.setValue(0); // Reset scroll position
+        animateScroll();
+      }
+    });
+  }, [data.length, scrollX, scrollSpeed]);
 
   useEffect(() => {
-    let currentIndex = 0;
-
-    const startAutoScroll = () => {
-      flatListRef.current?.scrollToOffset({ animated: true, offset: currentIndex * (width - 36) });
-
-      Animated.timing(scrollX, {
-        toValue: currentIndex * (width - 36),
-        duration: 3000,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      }).start(() => {
-        currentIndex++;
-        if (currentIndex < data.length) {
-          startAutoScroll();
-        } else {
-          currentIndex = 0;
-          flatListRef.current?.scrollToOffset({ animated: true, offset: 0 });
-          setTimeout(startAutoScroll, 2000); // Delay before starting over
-        }
-      });
-    };
-
-    startAutoScroll();
+    animateScroll();
 
     return () => {
+      isScrolling = false;
       scrollX.stopAnimation();
     };
-  }, [data, scrollX]);
+  }, [animateScroll, scrollX]);
+
+  useEffect(() => {
+    const listenerId = scrollX.addListener(({ value }) => {
+      const offset = value % (width * data.length);
+      flatListRef.current?.scrollToOffset({ offset, animated: false });
+    });
+
+    return () => {
+      scrollX.removeListener(listenerId);
+    };
+  }, [scrollX]);
+
+  const handleScrollBeginDrag = () => {
+    isScrolling = false;
+    scrollX.stopAnimation();
+  };
+
+  const handleScrollEndDrag = () => {
+    // Do nothing, stop automatic scrolling permanently after user interaction
+  };
 
   return (
     <View style={styles.container}>
       <FlatList
         ref={flatListRef}
-        data={data}
+        data={data} // Use original data without duplication
         horizontal
         showsHorizontalScrollIndicator={false}
         renderItem={({ item }) => (
@@ -56,12 +71,10 @@ const AutoScrollingList: React.FC<AutoScrollingListProps> = ({ data }) => {
           </View>
         )}
         keyExtractor={(item, index) => index.toString()}
-        onTouchStart={() => {
-          scrollX.stopAnimation();
-        }}
-        onTouchEnd={() => {
-        //   startAutoScroll();
-        }}
+        scrollEnabled // Enable manual scrolling
+        onScrollBeginDrag={handleScrollBeginDrag}
+        onScrollEndDrag={handleScrollEndDrag}
+        onMomentumScrollEnd={handleScrollEndDrag}
       />
     </View>
   );
@@ -73,8 +86,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   imageContainer: {
-    width: width - 36, // Adjust to fit within your layout
-    height: 200,
+    width: 100, // Adjust to fit within your layout
+    height: 100,
     marginRight: 16,
   },
   image: {
