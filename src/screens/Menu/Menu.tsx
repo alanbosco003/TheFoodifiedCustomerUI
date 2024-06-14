@@ -8,7 +8,7 @@ import LogoLight from '@/theme/assets/images/food/foodImage1.jpeg';
 import Food1 from '@/theme/assets/images/food/foodImage1.jpeg';
 import Food2 from '@/theme/assets/images/food/foodImage2.jpeg';
 import Food3 from '@/theme/assets/images/food/foodImage3.jpeg';
-
+ 
 
 import RestaurantHeader from '@/components/molecules/MenuHeader/MenuHeader';
 import AutoScrollingList from '@/components/molecules/AutoScrollinglist/AutoScrollingList';
