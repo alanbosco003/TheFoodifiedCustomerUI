@@ -37,10 +37,11 @@ const RestaurantHeader: React.FC<HeaderProps> = ({ name, subtitle, imagesList })
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ paddingHorizontal: 0 }} // Ensure padding to center the items
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
           <View style={styles.imageContainer}>
-            <Image source={item} style={styles.image} />
+            <Image source={item} style={styles.image} resizeMode="cover" />
           </View>
         )}
       />
@@ -58,7 +59,10 @@ const RestaurantHeader: React.FC<HeaderProps> = ({ name, subtitle, imagesList })
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    paddingLeft:20,
+    paddingRight:20,
+    borderRadius: 20,
+    padding: 0,
     backgroundColor: 'white',
   },
   name: {
@@ -71,14 +75,20 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   imageContainer: {
-    width: width - 36,
-    height: 200,
-    marginRight: 16,
+
+    backgroundColor: 'white',
+    borderRadius: 20,
+    width: width, // Adjust the width to fit within your layout and allow for spacing
+    height: 180,
+    marginHorizontal: 0, // Add margin to create space between images
   },
   image: {
-    width: '100%',
+    width: width - 40,
     height: '100%',
-    borderRadius: 8,
+    borderRadius: 20,
+    borderTopLeftRadius: 20,
+    borderBottomLeftRadius: 20
+
   },
   indicatorContainer: {
     flexDirection: 'row',

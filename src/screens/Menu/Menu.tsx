@@ -93,13 +93,14 @@ const Menu = () => {
 
   return (
     <SafeScreen>
+    <View style={styles.container}>
       {/* <AppBar title="Sai Savour" /> */}
       <RestaurantHeader
         name="Sai Savour"
         subtitle="Best food in town"
         imagesList={carouselData}
       />
-      <View style={styles.container}>
+      <Text style={styles.name}>{"Category"}</Text>
         <AutoScrollingList data={carouselDataCategory} />
         <FlatList
           data={menuItems}
@@ -113,6 +114,11 @@ const Menu = () => {
 };
 
 const styles = StyleSheet.create({
+  name: {
+    paddingLeft: 20,
+    fontSize: 18,
+    fontWeight: "normal"
+  },
   container: {
     flex: 1,
     backgroundColor: "white"
@@ -128,7 +134,7 @@ const styles = StyleSheet.create({
   menuItem: {
     flexDirection: 'row',
     borderRadius: 8,
-    backgroundColor: '#fff',
+    backgroundColor: 'white',
     overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
