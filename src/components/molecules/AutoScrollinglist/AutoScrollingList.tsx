@@ -1,14 +1,14 @@
 import React, { useRef, useEffect, useCallback } from 'react';
-import { View, FlatList, Image, StyleSheet, Dimensions, Animated, Easing } from 'react-native';
+import { View, FlatList, Image, Text, StyleSheet, Dimensions, Animated, Easing } from 'react-native';
 
 const { width } = Dimensions.get('window');
 
 interface AutoScrollingListProps {
-  data: number[]; // Assuming the data array contains image resource IDs
+  data: { image: number; text: string }[]; // Updated to array of objects with image and text
 }
 
 const AutoScrollingList: React.FC<AutoScrollingListProps> = ({ data }) => {
-  const flatListRef = useRef<FlatList<number>>(null);
+  const flatListRef = useRef<FlatList<{ image: number; text: string }>>(null);
   const scrollX = useRef(new Animated.Value(0)).current;
   const scrollSpeed = 50; // Adjust to control the scrolling speed
   let isScrolling = useRef(true).current;
@@ -66,8 +66,9 @@ const AutoScrollingList: React.FC<AutoScrollingListProps> = ({ data }) => {
         horizontal
         showsHorizontalScrollIndicator={false}
         renderItem={({ item }) => (
-          <View style={styles.imageContainer}>
-            <Image source={item} style={styles.image} />
+          <View style={styles.itemContainer}>
+            <Image source={item.image} style={styles.image} />
+            <Text style={styles.text}>{item.text}</Text>
           </View>
         )}
         keyExtractor={(item, index) => index.toString()}
@@ -82,18 +83,24 @@ const AutoScrollingList: React.FC<AutoScrollingListProps> = ({ data }) => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    paddingTop: 6,
+    paddingHorizontal: 16,
+    // padding: 16,
     backgroundColor: 'white',
   },
-  imageContainer: {
-    width: 100, // Adjust to fit within your layout
-    height: 100,
+  itemContainer: {
+    alignItems: 'center',
     marginRight: 16,
   },
   image: {
-    width: '100%',
-    height: '100%',
+    width: 60, // Adjust to fit within your layout
+    height: 60,
     borderRadius: 8,
+  },
+  text: {
+    marginTop: 8,
+    fontSize: 14,
+    color: '#333',
   },
 });
 

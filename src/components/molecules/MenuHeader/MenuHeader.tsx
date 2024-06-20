@@ -4,8 +4,6 @@ import { View, Text, StyleSheet, FlatList, Image, Dimensions } from 'react-nativ
 const { width } = Dimensions.get('window');
 
 interface HeaderProps {
-  name: string;
-  subtitle: string;
   imagesList: any[];
 }
 
@@ -29,8 +27,6 @@ const RestaurantHeader: React.FC<HeaderProps> = ({ name, subtitle, imagesList })
 
   return (
     <View style={styles.container}>
-      <Text style={styles.name}>{name}</Text>
-      <Text style={styles.subtitle}>{subtitle}</Text>
       <FlatList
         ref={flatListRef}
         data={imagesList}

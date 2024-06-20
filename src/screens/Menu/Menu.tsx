@@ -1,28 +1,25 @@
 // src/screens/Menu.tsx
 
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useTheme } from '@/theme';
 import { SafeScreen } from '@/components/template';
 import LogoLight from '@/theme/assets/images/food/foodImage1.jpeg';
 import Food1 from '@/theme/assets/images/food/foodImage1.jpeg';
 import Food2 from '@/theme/assets/images/food/foodImage2.jpeg';
 import Food3 from '@/theme/assets/images/food/foodImage3.jpeg';
- 
 
 import RestaurantHeader from '@/components/molecules/MenuHeader/MenuHeader';
 import AutoScrollingList from '@/components/molecules/AutoScrollinglist/AutoScrollingList';
 
-
 const carouselDataCategory = [
-  LogoLight,
-  LogoLight,
-  LogoLight,
-  LogoLight,
-  LogoLight,
-  LogoLight,
-  LogoLight
-  // Add more items as needed
+  { image: LogoLight, text: "Juice" },
+  { image: LogoLight, text: "Pizza" },
+  { image: LogoLight, text: "Burger" },
+  { image: LogoLight, text: "Pasta" },
+  { image: LogoLight, text: "Salad" },
+  { image: LogoLight, text: "Sushi" },
+  { image: LogoLight, text: "Dessert" },
 ];
 
 const carouselData = [
@@ -56,14 +53,14 @@ const menuItems: MenuItem[] = [
     price: '$8',
   },
   {
-    id: '1',
+    id: '3',
     image: LogoLight,
     title: 'Pizza',
     description: 'Delicious cheese pizza',
     price: '$10',
   },
   {
-    id: '2',
+    id: '4',
     image: LogoLight,
     title: 'Burger',
     description: 'Juicy beef burger',
@@ -93,35 +90,46 @@ const Menu = () => {
 
   return (
     <SafeScreen>
-    <View style={styles.container}>
-      {/* <AppBar title="Sai Savour" /> */}
-      <RestaurantHeader
-        name="Sai Savour"
-        subtitle="Best food in town"
-        imagesList={carouselData}
-      />
-      <Text style={styles.name}>{"Category"}</Text>
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        <Text style={styles.name}>{"Sai Savour"}</Text>
+        <RestaurantHeader imagesList={carouselData} />
+        <Text style={styles.subHeadings}>{"Categories"}</Text>
         <AutoScrollingList data={carouselDataCategory} />
-        <FlatList
-          data={menuItems}
-          renderItem={renderMenuItem}
-          keyExtractor={item => item.id}
-          contentContainerStyle={styles.menuList}
-        />
-      </View>
+        <View style={styles.menuList}>
+          {menuItems.map(item => renderMenuItem({ item }))}
+        </View>
+      </ScrollView>
     </SafeScreen>
   );
 };
 
 const styles = StyleSheet.create({
-  name: {
+  subHeadings: {
     paddingLeft: 20,
-    fontSize: 18,
-    fontWeight: "normal"
+    fontSize: 16,
+    color: '#666',
+    fontWeight: "500"
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 16,
+  },
+  name: {
+    padding: 11,
+    textAlign: "center",
+    fontSize: 21,
+    fontWeight: "600",
+    color: "black"
   },
   container: {
     flex: 1,
     backgroundColor: "white"
+  },
+  scrollViewContent: {
+    backgroundColor: "white",
+    flexGrow: 1,
+    paddingBottom: 16, // Optional: Adds space at the bottom
   },
   carouselImage: {
     width: '100%',
@@ -141,6 +149,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 1.41,
     elevation: 2,
+    marginBottom: 16,
   },
   menuItemImage: {
     width: 100,
