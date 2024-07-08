@@ -1,6 +1,6 @@
 // src/screens/Menu.tsx
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useTheme } from '@/theme';
 import { SafeScreen } from '@/components/template';
@@ -11,6 +11,7 @@ import Food3 from '@/theme/assets/images/food/foodImage3.jpeg';
 
 import RestaurantHeader from '@/components/molecules/MenuHeader/MenuHeader';
 import AutoScrollingList from '@/components/molecules/AutoScrollinglist/AutoScrollingList';
+import ItemAddButton from '@/components/atoms/buttons/ItemAddButton';
 
 const carouselDataCategory = [
   { image: LogoLight, text: "Juice" },
@@ -42,47 +43,103 @@ const menuItems: MenuItem[] = [
     id: '1',
     image: LogoLight,
     title: 'Pizza',
-    description: 'Delicious cheese pizza',
+    description: 'A mouth-watering cheese pizza topped with a blend of mozzarella, cheddar, and Parmesan cheese, baked to perfection with a golden crust.',
     price: '$10',
   },
   {
     id: '2',
     image: LogoLight,
     title: 'Burger',
-    description: 'Juicy beef burger',
+    description: 'A juicy beef burger layered with fresh lettuce, ripe tomatoes, crispy pickles, and a dollop of our special sauce, served on a toasted sesame bun.',
     price: '$8',
   },
   {
     id: '3',
     image: LogoLight,
-    title: 'Pizza',
-    description: 'Delicious cheese pizza',
-    price: '$10',
+    title: 'Spaghetti',
+    description: 'Classic Italian spaghetti served with a rich and savory marinara sauce, sprinkled with freshly grated Parmesan cheese and basil leaves.',
+    price: '$12',
   },
   {
     id: '4',
     image: LogoLight,
-    title: 'Burger',
-    description: 'Juicy beef burger',
-    price: '$8',
+    title: 'Salad',
+    description: 'A fresh garden salad featuring crisp lettuce, cherry tomatoes, cucumbers, and red onions, tossed with a light vinaigrette dressing.',
+    price: '$7',
   },
-  // Add more items here
+  {
+    id: '5',
+    image: LogoLight,
+    title: 'Grilled Chicken',
+    description: 'Tender grilled chicken breast seasoned with a blend of herbs and spices, served with a side of steamed vegetables and mashed potatoes.',
+    price: '$15',
+  },
+  {
+    id: '6',
+    image: LogoLight,
+    title: 'Ice Cream Sundae',
+    description: 'A delightful ice cream sundae topped with chocolate syrup, whipped cream, and a cherry on top, served with a sprinkle of nuts and a wafer stick.',
+    price: '$5',
+  },
 ];
 
 const Menu = () => {
   const { colors, gutters, fonts } = useTheme();
+  const [itemCounts, setItemCounts] = useState<{ [key: string]: number }>({});
+  // Calculate total items whenever itemCounts changes
+
+  const totalItems = Object.values(itemCounts).reduce((sum, count) => sum + count, 0);
+
+  const handleAddItem = (id: string) => {
+    setItemCounts(prevCounts => ({
+      ...prevCounts,
+      [id]: (prevCounts[id] || 0) + 1,
+    }));
+    console.log(totalItems)
+  };
+
+  const handleProceed = () => {
+    // Handle the proceed action
+    console.log('Proceeding with items:', itemCounts);
+  };
+
+  const handleRemoveItem = (id: string) => {
+    setItemCounts(prevCounts => {
+      const newCounts = { ...prevCounts };
+      if (newCounts[id] > 1) {
+        newCounts[id] -= 1;
+      } else {
+        delete newCounts[id];
+      }
+      return newCounts;
+    });
+  };
 
   const renderMenuItem = ({ item }: { item: MenuItem }) => (
     <View style={[styles.menuItem, gutters.marginBottom_16]}>
       <Image source={item.image} style={styles.menuItemImage} />
       <View style={styles.menuItemDetails}>
-        <Text style={styles.menuItemTitle}>{item.title}</Text>
-        <Text style={styles.menuItemDescription}>{item.description}</Text>
+        <View style={styles.menuItemTextContainer}>
+          <Text style={styles.menuItemTitle}>{item.title}</Text>
+          <Text style={styles.menuItemDescription} numberOfLines={2} ellipsizeMode='tail'>{item.description}</Text>
+        </View>
         <View style={styles.menuItemFooter}>
           <Text style={styles.menuItemPrice}>{item.price}</Text>
-          <TouchableOpacity style={styles.addButton}>
-            <Text style={styles.addButtonText}>Add</Text>
-          </TouchableOpacity>
+          {itemCounts[item.id] ? (
+            <View style={styles.counterContainer}>
+              <TouchableOpacity onPress={() => handleRemoveItem(item.id)} style={styles.counterButton}>
+                <Text style={styles.counterButtonText}>-</Text>
+              </TouchableOpacity>
+              <Text style={styles.itemCount}>{itemCounts[item.id]}</Text>
+              <TouchableOpacity onPress={() => handleAddItem(item.id)} style={styles.counterButton}>
+                <Text style={styles.counterButtonText}>+</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <TouchableOpacity onPress={() => handleAddItem(item.id)} style={styles.addButton}>
+              <Text style={styles.addButtonText}>Add</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </View>
@@ -98,6 +155,14 @@ const Menu = () => {
         <View style={styles.menuList}>
           {menuItems.map(item => renderMenuItem({ item }))}
         </View>
+        {/* {totalItems > 0 && ( */}
+          <ItemAddButton itemCount={totalItems} onProceed={handleProceed} />
+        {/* )} */}
+        {totalItems > 0 && (
+  <View style={{ backgroundColor: 'red', height: 50 }}>
+    <Text>{`Total items: ${totalItems}`}</Text>
+  </View>
+)}
       </ScrollView>
     </SafeScreen>
   );
@@ -150,24 +215,30 @@ const styles = StyleSheet.create({
     shadowRadius: 1.41,
     elevation: 2,
     marginBottom: 16,
+    padding: 4, // Padding to fit the image within the component
+    height: 100 + 8, // Image height + padding (4 * 2)
   },
   menuItemImage: {
     width: 100,
     height: 100,
+    borderRadius: 6,
+    marginRight: 10,
   },
   menuItemDetails: {
     flex: 1,
-    padding: 16,
+    justifyContent: 'space-between', // Ensure the footer is at the bottom
+  },
+  menuItemTextContainer: {
+    justifyContent: 'flex-start', 
+    // Container for the title and description
   },
   menuItemTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 8,
+    fontWeight: '600',
   },
   menuItemDescription: {
     fontSize: 14,
     color: '#666',
-    marginBottom: 8,
   },
   menuItemFooter: {
     flexDirection: 'row',
@@ -179,14 +250,36 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   addButton: {
-    backgroundColor: '#ff6347',
+    marginRight: 10,
+    backgroundColor: 'black',
     borderRadius: 4,
     paddingHorizontal: 8,
     paddingVertical: 4,
   },
   addButtonText: {
+    paddingHorizontal: 15,
     color: '#fff',
     fontSize: 14,
+  },
+  counterContainer: {
+    marginRight: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  counterButton: {
+    backgroundColor: 'black',
+    borderRadius: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  counterButtonText: {
+    color: '#fff',
+    fontSize: 14,
+  },
+  itemCount: {
+    marginHorizontal: 8,
+    fontSize: 16,
+    fontWeight: '500',
   },
 });
 
