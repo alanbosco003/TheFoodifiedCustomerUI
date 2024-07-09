@@ -7,7 +7,7 @@ interface HeaderProps {
   imagesList: any[];
 }
 
-const RestaurantHeader: React.FC<HeaderProps> = ({ name, subtitle, imagesList }) => {
+const RestaurantHeader: React.FC<HeaderProps> = ({imagesList }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef<FlatList<any>>(null);
 
