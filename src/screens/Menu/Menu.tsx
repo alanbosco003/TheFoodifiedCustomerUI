@@ -115,6 +115,12 @@ const Menu = () => {
     });
   };
 
+  const selectedItems = Object.keys(itemCounts).map(key => ({
+    id: key,
+    title: menuItems.find(item => item.id === key)?.title || '',
+    count: itemCounts[key],
+  }));
+
   const renderMenuItem = ({ item }: { item: MenuItem }) => (
     <View style={[styles.menuItem, gutters.marginBottom_16]}>
       <Image source={item.image} style={styles.menuItemImage} />
@@ -147,28 +153,36 @@ const Menu = () => {
 
   return (
     <SafeScreen>
-      <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        <Text style={styles.name}>{"Sai Savour"}</Text>
-        <RestaurantHeader imagesList={carouselData} />
-        <Text style={styles.subHeadings}>{"Categories"}</Text>
-        <AutoScrollingList data={carouselDataCategory} />
-        <View style={styles.menuList}>
-          {menuItems.map(item => renderMenuItem({ item }))}
-        </View>
-        {/* {totalItems > 0 && ( */}
-          <ItemAddButton itemCount={totalItems} onProceed={handleProceed} />
-        {/* )} */}
+      <View style={{ flex: 1 }}>
+        <ScrollView contentContainerStyle={styles.scrollViewContent}>
+          <Text style={styles.name}>{"Sai Savour"}</Text>
+          <RestaurantHeader imagesList={carouselData} />
+          <Text style={styles.subHeadings}>{"Categories"}</Text>
+          <AutoScrollingList data={carouselDataCategory} />
+          <View style={styles.menuList}>
+            {menuItems.map(item => renderMenuItem({ item }))}
+          </View>
+        </ScrollView>
         {totalItems > 0 && (
-  <View style={{ backgroundColor: 'red', height: 50 }}>
-    <Text>{`Total items: ${totalItems}`}</Text>
-  </View>
-)}
-      </ScrollView>
+        <ItemAddButton
+          itemCount={totalItems}
+          items={selectedItems}
+          onProceed={handleProceed}
+        />
+      )}
+      </View>
     </SafeScreen>
   );
 };
 
 const styles = StyleSheet.create({
+
+  floatingButtonContainer: {
+    position: 'absolute',
+    bottom: 10,
+    left: 0,
+    right: 0,
+  },
   subHeadings: {
     paddingLeft: 20,
     fontSize: 16,
