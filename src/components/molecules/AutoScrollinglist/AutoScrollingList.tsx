@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     paddingTop: 6,
     paddingHorizontal: 16,
     // padding: 16,
-    backgroundColor: 'white',
+    backgroundColor: '#F3F1E9',
   },
   itemContainer: {
     alignItems: 'center',
