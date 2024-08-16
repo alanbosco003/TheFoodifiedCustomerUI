@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     paddingRight:20,
     borderRadius: 20,
     padding: 0,
-    backgroundColor: 'white',
+    backgroundColor: '#F3F1E9',
   },
   name: {
     fontSize: 24,
@@ -71,8 +71,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   imageContainer: {
-
-    backgroundColor: 'white',
+    backgroundColor: '#F3F1E9',
     borderRadius: 20,
     width: width, // Adjust the width to fit within your layout and allow for spacing
     height: 180,
