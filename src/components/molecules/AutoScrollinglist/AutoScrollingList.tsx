@@ -1,47 +1,65 @@
-// src/components/molecules/AutoScrollingList.tsx
-
-import React, { useRef, useEffect } from 'react';
-import { View, FlatList, Image, StyleSheet, Dimensions, Animated, Easing } from 'react-native';
+import React, { useRef, useEffect, useCallback, useState } from 'react';
+import { View, FlatList, Image, Text, StyleSheet, Dimensions, Animated, Easing, TouchableOpacity } from 'react-native';
 
 const { width } = Dimensions.get('window');
 
 interface AutoScrollingListProps {
-  data: number[]; // Assuming the data array contains image resource IDs
+  data: { image: number; text: string }[]; 
+  onSelectCategory: (category: string) => void; // Callback to handle selection
+  selectedCategory: string; // Prop to indicate the currently selected category
 }
 
-const AutoScrollingList: React.FC<AutoScrollingListProps> = ({ data }) => {
-  const flatListRef = useRef<FlatList<number>>(null);
+const AutoScrollingList: React.FC<AutoScrollingListProps> = ({ data, onSelectCategory, selectedCategory }) => {
+  const flatListRef = useRef<FlatList<{ image: number; text: string }>>(null);
   const scrollX = useRef(new Animated.Value(0)).current;
+  const scrollSpeed = 50; // Adjust to control the scrolling speed
+  let isScrolling = useRef(true).current;
+
+  const animateScroll = useCallback(() => {
+    if (!isScrolling) return;
+
+    Animated.timing(scrollX, {
+      toValue: width * data.length,
+      duration: (width * data.length) / scrollSpeed * 1000,
+      easing: Easing.linear,
+      useNativeDriver: true,
+    }).start(({ finished }) => {
+      if (finished && isScrolling) {
+        scrollX.setValue(0); // Reset scroll position
+        animateScroll();
+      }
+    });
+  }, [data.length, scrollX, scrollSpeed]);
 
   useEffect(() => {
-    let currentIndex = 0;
-
-    const startAutoScroll = () => {
-      flatListRef.current?.scrollToOffset({ animated: true, offset: currentIndex * (width - 36) });
-
-      Animated.timing(scrollX, {
-        toValue: currentIndex * (width - 36),
-        duration: 3000,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      }).start(() => {
-        currentIndex++;
-        if (currentIndex < data.length) {
-          startAutoScroll();
-        } else {
-          currentIndex = 0;
-          flatListRef.current?.scrollToOffset({ animated: true, offset: 0 });
-          setTimeout(startAutoScroll, 2000); // Delay before starting over
-        }
-      });
-    };
-
-    startAutoScroll();
+    animateScroll();
 
     return () => {
+      isScrolling = false;
       scrollX.stopAnimation();
     };
-  }, [data, scrollX]);
+  }, [animateScroll, scrollX]);
+
+  useEffect(() => {
+    const listenerId = scrollX.addListener(({ value }) => {
+      const offset = value % (width * data.length);
+      flatListRef.current?.scrollToOffset({ offset, animated: false });
+    });
+
+    return () => {
+      scrollX.removeListener(listenerId);
+    };
+  }, [scrollX]);
+
+  const handleScrollBeginDrag = () => {
+    isScrolling = false;
+    scrollX.stopAnimation();
+  };
+
+  const handleCategoryPress = (category: string) => {
+
+    onSelectCategory(category); // Trigger the callback with the selected category
+  };
 
   return (
     <View style={styles.container}>
@@ -51,17 +69,27 @@ const AutoScrollingList: React.FC<AutoScrollingListProps> = ({ data }) => {
         horizontal
         showsHorizontalScrollIndicator={false}
         renderItem={({ item }) => (
-          <View style={styles.imageContainer}>
-            <Image source={item} style={styles.image} />
-          </View>
+          <TouchableOpacity
+            style={[
+              styles.itemContainer,
+              selectedCategory === item.text && styles.selectedItemContainer, // Apply selected style
+            ]}
+            onPress={() => handleCategoryPress(item.text)}
+          >
+            <Image source={item.image} style={styles.image} />
+            <Text
+              style={[
+                styles.text,
+                selectedCategory === item.text && styles.selectedText, // Apply selected text style
+              ]}
+            >
+              {item.text}
+            </Text>
+          </TouchableOpacity>
         )}
         keyExtractor={(item, index) => index.toString()}
-        onTouchStart={() => {
-          scrollX.stopAnimation();
-        }}
-        onTouchEnd={() => {
-        //   startAutoScroll();
-        }}
+        scrollEnabled
+        onScrollBeginDrag={handleScrollBeginDrag}
       />
     </View>
   );
@@ -69,18 +97,34 @@ const AutoScrollingList: React.FC<AutoScrollingListProps> = ({ data }) => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
-    backgroundColor: 'white',
+    paddingTop: 6,
+    paddingHorizontal: 16,
+    backgroundColor: '#F3F1E9',
   },
-  imageContainer: {
-    width: width - 36, // Adjust to fit within your layout
-    height: 200,
-    marginRight: 16,
+  itemContainer: {
+    alignItems: 'center',
+    marginRight: 13,
+    padding: 6,
+    borderRadius: 8,
+  },
+  selectedItemContainer: {
+    backgroundColor: '#C2BCA8', // Highlight color for selected category
   },
   image: {
-    width: '100%',
-    height: '100%',
+    width: 50,
+    height: 50,
     borderRadius: 8,
+  },
+  text: {
+    marginTop: 8,
+    fontSize: 14,
+    color: '#333',
+    fontFamily: "MuliLight-lg9VZ"
+  },
+  selectedText: {
+    color: 'black', // Change text color for selected category
+    fontSize: 16,
+    fontFamily: "MuliLight-lg9VZ"
   },
 });
 
