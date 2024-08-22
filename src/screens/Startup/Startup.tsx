@@ -23,7 +23,7 @@ function Startup({ navigation }: ApplicationScreenProps) {
 	useEffect(() => {
 		navigation.reset({
 			index: 0,
-			routes: [{ name: 'Login' }],
+			routes: [{ name: 'LoginScreen' }],
 		});
 	}, [isSuccess]);
 
