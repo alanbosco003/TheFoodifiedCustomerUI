@@ -24,33 +24,32 @@ const CustomButton: React.FC<CustomButtonProps> = ({ title, onPress, isPrimary =
 
 const styles = StyleSheet.create({
   button: {
-    width: '100%',
-    paddingVertical: 12,
-    borderRadius: 6,
-    shadowColor: '#000',
-    shadowOffset: { width: 1, height: 1 },
-    shadowOpacity: 1,
-    shadowRadius: 12,
-    elevation: 12,
+    height: 40,
+    width: 200,
+    borderRadius: 30,
+    justifyContent: 'center', // Center vertically
+    alignItems: 'center', // Center horizontally
   },
   primary: {
-    backgroundColor: 'black',
+    backgroundColor: '#C2BCA8',
+    paddingHorizontal: 25,
   },
   secondary: {
-    backgroundColor: 'white',
-    borderWidth: 1,
-    borderColor: 'black',
+    backgroundColor: 'black',
+    paddingHorizontal: 25,
   },
   text: {
-    textAlign: 'center',
     fontSize: 18,
     fontWeight: '600',
+    // color: '#666',
+    color: 'white',
+    fontFamily: "Muli-1GDlj"
   },
   primaryText: {
-    color: 'white',
+    color: 'black',
   },
   secondaryText: {
-    color: 'black',
+    color: 'white',
   },
 });
 

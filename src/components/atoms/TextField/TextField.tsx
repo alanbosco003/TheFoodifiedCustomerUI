@@ -1,8 +1,7 @@
-// src/components/atoms/TextField.tsx
+// src/components/atoms/TextField/TextField.tsx
 
 import React from 'react';
 import { View, TextInput, StyleSheet, TextInputProps } from 'react-native';
-import { useTheme } from '@/theme';
 
 interface TextFieldProps extends TextInputProps {
   placeholder: string;
@@ -12,14 +11,12 @@ interface TextFieldProps extends TextInputProps {
 }
 
 const TextField: React.FC<TextFieldProps> = ({ placeholder, secureTextEntry, onChangeText, value }) => {
-  const { colors } = useTheme();
-
   return (
     <View style={styles.container}>
       <TextInput
-        style={[styles.input, { borderColor: colors.gray800, color: colors.gray800 }]}
+        style={styles.input}
         placeholder={placeholder}
-        placeholderTextColor={colors.gray400}
+        placeholderTextColor="#000"
         secureTextEntry={secureTextEntry}
         onChangeText={onChangeText}
         value={value}
@@ -30,14 +27,23 @@ const TextField: React.FC<TextFieldProps> = ({ placeholder, secureTextEntry, onC
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 8,
+    paddingHorizontal: 25,
+    flexDirection: 'row',
+    width: "100%",
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: "#F3F1E9",
   },
   input: {
     height: 40,
-    borderWidth: 1,
-    borderRadius: 4,
-    paddingHorizontal: 8,
-    fontSize: 16,
+    flex: 1,
+    borderRadius: 30,
+    paddingHorizontal: 16,
+    fontSize: 14,
+    backgroundColor: 'white', 
+    // color: 'black',
+    color: '#666',
+    fontFamily: "MuliLightItalic-nRvDR",
   },
 });
 

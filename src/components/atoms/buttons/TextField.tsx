@@ -1,5 +1,3 @@
-// src/components/atoms/TextField/TextField.tsx
-
 import React from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
 
@@ -12,25 +10,20 @@ interface TextFieldProps {
 
 const TextField: React.FC<TextFieldProps> = ({ placeholder, secureTextEntry = false, onChangeText, value }) => {
   return (
-    <View style={styles.container}>
       <TextInput
         style={styles.input}
         placeholder={placeholder}
         secureTextEntry={secureTextEntry}
         placeholderTextColor="#000"
         onChangeText={onChangeText}
-        value={value}  // Pass the value prop here
+        value={value}
       />
-    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    marginVertical: 10,
-  },
   input: {
+    flex:1,
     backgroundColor: 'white',
     borderWidth: 1,
     borderColor: 'black',
