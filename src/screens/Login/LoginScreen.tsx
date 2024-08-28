@@ -13,6 +13,7 @@ import Icon7 from '../../theme/assets/icons/food7.png';
 import Icon8 from '../../theme/assets/icons/food8.png';
 import Icon9 from '../../theme/assets/icons/food9.png';
 import Icon10 from '../../theme/assets/icons/food10.png';
+import { usernameValidation } from '../../validation/LoginFormValidation';
 
 interface LoginProps {
   navigation: any;
@@ -21,9 +22,16 @@ interface LoginProps {
 const LoginScreen: React.FC<LoginProps> = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [usernameError, setUsernameError] = useState<string | null>(null);
 
   const handleLogin = () => {
     navigation.navigate('Home');
+  };
+
+  const handleUsernameChange = (text: string) => {
+    setUsername(text);
+    const error = usernameValidation(text);
+    setUsernameError(error); // Update error state
   };
 
   const images = [
@@ -40,6 +48,7 @@ const LoginScreen: React.FC<LoginProps> = ({ navigation }) => {
   ];
 
   const handleSignUp = () => {
+    navigation.navigate('SignUp');
     // Handle sign up logic here
   };
 
@@ -58,10 +67,11 @@ const LoginScreen: React.FC<LoginProps> = ({ navigation }) => {
           </View>
           <View style={{ height: 60 }} />
           <TextField
-            placeholder="Username"
-            onChangeText={setUsername}
-            value={username}
-          />
+        placeholder="Username"
+        onChangeText={handleUsernameChange}
+        value={username}
+        errorText={usernameError}
+      />
           <View style={styles.sizedBox} />
           <TextField
             placeholder="Password"

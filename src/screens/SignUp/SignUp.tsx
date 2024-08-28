@@ -1,86 +1,182 @@
-// src/screens/SignUp.tsx
-
 import React, { useState } from 'react';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { useTranslation } from 'react-i18next';
-import { useTheme } from '@/theme';
-import TextField from '@/components/atoms/TextField/TextField';
-import TextButton from '@/components/atoms/TextButton/TextButton';
-import { SafeScreen } from '@/components/template';
+import { View, StyleSheet, Text, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import TextField from '../../components/atoms/TextField/TextField';
+import CustomButton from '../../components/atoms/buttons/CustomButton';
+import ScrollingFoodIcons from '@/components/molecules/ScrollingFoodItems/ScrollingFoodItems';
+import Icon1 from '../../theme/assets/icons/food1.png';
+import Icon2 from '../../theme/assets/icons/food2.png';
+import Icon3 from '../../theme/assets/icons/food3.png';
+import Icon4 from '../../theme/assets/icons/food4.png';
+import Icon5 from '../../theme/assets/icons/food5.png';
+import Icon6 from '../../theme/assets/icons/food6.png';
+import Icon7 from '../../theme/assets/icons/food7.png';
+import Icon8 from '../../theme/assets/icons/food8.png';
+import Icon9 from '../../theme/assets/icons/food9.png';
+import Icon10 from '../../theme/assets/icons/food10.png';
+import { usernameValidation, emailValidation, passwordValidation, confirmPasswordValidation } from '../../validation/LoginFormValidation';
 
 interface SignUpProps {
   navigation: any;
 }
 
 const SignUp: React.FC<SignUpProps> = ({ navigation }) => {
-  const { t } = useTranslation();
-  const { colors, gutters, fonts } = useTheme();
-  const [name, setName] = useState('');
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleSignUp = () => {
-    // Handle sign up logic here
+  const [usernameError, setUsernameError] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [confirmPasswordError, setConfirmPasswordError] = useState<string | null>(null);
+
+  const handleUsernameChange = (text: string) => {
+    setUsername(text);
+    setUsernameError(usernameValidation(text));
   };
 
+  const handleEmailChange = (text: string) => {
+    setEmail(text);
+    setEmailError(emailValidation(text));
+  };
+
+  const handlePasswordChange = (text: string) => {
+    setPassword(text);
+    setPasswordError(passwordValidation(text));
+    setConfirmPasswordError(confirmPasswordValidation(text, confirmPassword));
+  };
+
+  const handleConfirmPasswordChange = (text: string) => {
+    setConfirmPassword(text);
+    setConfirmPasswordError(confirmPasswordValidation(password, text));
+  };
+
+  const handleSignUp = () => {
+    if (!usernameError && !emailError && !passwordError && !confirmPasswordError) {
+      navigation.navigate('Home');
+      // Handle sign-up logic here
+    }
+  };
+
+  const images = [
+    Icon1,
+    Icon2,
+    Icon3,
+    Icon4,
+    Icon5,
+    Icon6,
+    Icon7,
+    Icon8,
+    Icon9,
+    Icon10,
+  ];
+
   return (
-    <SafeScreen>
-      <View style={[styles.container, gutters.paddingHorizontal_32]}>
-        <Text style={[styles.title, { color: colors.gray800 }]}>Sign Up</Text>
-        <TextField
-          placeholder="Name"
-          value={name}
-          onChangeText={setName}
-        />
-        <TextField
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-        />
-        <TextField
-          placeholder="Phone"
-          value={phone}
-          onChangeText={setPhone}
-        />
-        <TextField
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
-        <TouchableOpacity
-          style={[styles.button, { backgroundColor: colors.purple50 }]}
-          onPress={handleSignUp}
-        >
-          <Text style={[styles.buttonText, { color: colors.red500 }]}>Sign Up</Text>
-        </TouchableOpacity>
-        <TextButton title="Back to Login" onPress={() => navigation.navigate('Login')} />
-      </View>
-    </SafeScreen>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
+      <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.formContainer}>
+          <Text style={styles.appTitle}>{"Foodified"}</Text>
+          <Text style={styles.appSubtitle}>{"Your Meal, Just a Tap Away"}</Text>
+          <View style={{ height: 20 }} />
+          <View style={styles.foodScrollContainer}>
+            <ScrollingFoodIcons images={images} />
+          </View>
+          <View style={{ height: 60 }} />
+          <TextField
+            placeholder="Enter Your Name"
+            onChangeText={handleUsernameChange}
+            value={username}
+            errorText={usernameError}
+          />
+          <View style={styles.sizedBox} />
+          <TextField
+            placeholder="Enter Your Email"
+            onChangeText={handleEmailChange}
+            value={email}
+            errorText={emailError}
+          />
+          <View style={styles.sizedBox} />
+          <TextField
+            placeholder="Enter Your Password"
+            secureTextEntry
+            onChangeText={handlePasswordChange}
+            value={password}
+            errorText={passwordError}
+          />
+          <View style={styles.sizedBox} />
+          <TextField
+            placeholder="Confirm Your Password"
+            secureTextEntry
+            onChangeText={handleConfirmPasswordChange}
+            value={confirmPassword}
+            errorText={confirmPasswordError}
+          />
+          <View style={styles.divider} />
+          <View style={styles.sizedBox} />
+          <CustomButton title="Sign Up" onPress={handleSignUp} isPrimary={false} />
+        </View>
+        <Text style={styles.consentText}>
+          By signing in, you agree to our{' '}
+          <Text style={styles.link}>Terms & Conditions</Text> and{' '}
+          <Text style={styles.link}>Privacy Policy</Text>.
+        </Text>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  formContainer: {
     flex: 1,
     justifyContent: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
-  },
-  button: {
-    height: 50,
-    borderRadius: 4,
-    justifyContent: 'center',
+    paddingHorizontal: 0,
     alignItems: 'center',
-    marginVertical: 16,
   },
-  buttonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
+  consentText: {
+    fontSize: 12,
+    color: '#888',
+    textAlign: 'center',
+    marginTop: 20,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+  },
+  link: {
+    textDecorationLine: 'underline',
+    color: '#888',
+  },
+  foodScrollContainer: {
+    height: 50,
+  },
+  sizedBox: {
+    height: 18,
+  },
+  appTitle: {
+    fontSize: 32,
+    fontWeight: "600",
+    color: "black",
+    fontFamily: "Pacifico-Regular",
+  },
+  appSubtitle: {
+    fontSize: 16,
+    color: 'black',
+    fontWeight: "500",
+    fontFamily: "Muli-1GDlj",
+  },
+  container: {
+    flexGrow: 1,
+    backgroundColor: "#F3F1E9",
+    justifyContent: 'space-between', 
+    alignItems: 'center', 
+  },
+  divider: {
+    height: 0.6,
+    width: '60%',
+    backgroundColor: 'grey',
+    marginVertical: 20,
+    marginHorizontal: 30,
   },
 });
 
