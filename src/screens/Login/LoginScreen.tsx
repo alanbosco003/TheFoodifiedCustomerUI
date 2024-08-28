@@ -13,49 +13,25 @@ import Icon7 from '../../theme/assets/icons/food7.png';
 import Icon8 from '../../theme/assets/icons/food8.png';
 import Icon9 from '../../theme/assets/icons/food9.png';
 import Icon10 from '../../theme/assets/icons/food10.png';
-import { usernameValidation, emailValidation, passwordValidation, confirmPasswordValidation } from '../../validation/LoginFormValidation';
+import { usernameValidation } from '../../validation/LoginFormValidation';
 
-interface SignUpProps {
+interface LoginProps {
   navigation: any;
 }
 
-const SignUp: React.FC<SignUpProps> = ({ navigation }) => {
+const LoginScreen: React.FC<LoginProps> = ({ navigation }) => {
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-
   const [usernameError, setUsernameError] = useState<string | null>(null);
-  const [emailError, setEmailError] = useState<string | null>(null);
-  const [passwordError, setPasswordError] = useState<string | null>(null);
-  const [confirmPasswordError, setConfirmPasswordError] = useState<string | null>(null);
+
+  const handleLogin = () => {
+    navigation.navigate('Home');
+  };
 
   const handleUsernameChange = (text: string) => {
     setUsername(text);
-    setUsernameError(usernameValidation(text));
-  };
-
-  const handleEmailChange = (text: string) => {
-    setEmail(text);
-    setEmailError(emailValidation(text));
-  };
-
-  const handlePasswordChange = (text: string) => {
-    setPassword(text);
-    setPasswordError(passwordValidation(text));
-    setConfirmPasswordError(confirmPasswordValidation(text, confirmPassword));
-  };
-
-  const handleConfirmPasswordChange = (text: string) => {
-    setConfirmPassword(text);
-    setConfirmPasswordError(confirmPasswordValidation(password, text));
-  };
-
-  const handleSignUp = () => {
-    if (!usernameError && !emailError && !passwordError && !confirmPasswordError) {
-      navigation.navigate('Home');
-      // Handle sign-up logic here
-    }
+    const error = usernameValidation(text);
+    setUsernameError(error); // Update error state
   };
 
   const images = [
@@ -70,6 +46,11 @@ const SignUp: React.FC<SignUpProps> = ({ navigation }) => {
     Icon9,
     Icon10,
   ];
+
+  const handleSignUp = () => {
+    navigation.navigate('SignUp');
+    // Handle sign up logic here
+  };
 
   return (
     <KeyboardAvoidingView
@@ -86,35 +67,20 @@ const SignUp: React.FC<SignUpProps> = ({ navigation }) => {
           </View>
           <View style={{ height: 60 }} />
           <TextField
-            placeholder="Enter Your Name"
-            onChangeText={handleUsernameChange}
-            value={username}
-            errorText={usernameError}
-          />
+        placeholder="Username"
+        onChangeText={handleUsernameChange}
+        value={username}
+        errorText={usernameError}
+      />
           <View style={styles.sizedBox} />
           <TextField
-            placeholder="Enter Your Email"
-            onChangeText={handleEmailChange}
-            value={email}
-            errorText={emailError}
-          />
-          <View style={styles.sizedBox} />
-          <TextField
-            placeholder="Enter Your Password"
+            placeholder="Password"
             secureTextEntry
-            onChangeText={handlePasswordChange}
+            onChangeText={setPassword}
             value={password}
-            errorText={passwordError}
-          />
-          <View style={styles.sizedBox} />
-          <TextField
-            placeholder="Confirm Your Password"
-            secureTextEntry
-            onChangeText={handleConfirmPasswordChange}
-            value={confirmPassword}
-            errorText={confirmPasswordError}
           />
           <View style={styles.divider} />
+          <CustomButton title="Login" onPress={handleLogin} />
           <View style={styles.sizedBox} />
           <CustomButton title="Sign Up" onPress={handleSignUp} isPrimary={false} />
         </View>
@@ -180,4 +146,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SignUp;
+export default LoginScreen;
