@@ -9,6 +9,7 @@ import LoginScreen from '@/screens/Login/LoginScreen';
 import SignUp from '@/screens/SignUp/SignUp';
 import Menu from '@/screens/Menu/Menu';
 
+
 const Stack = createStackNavigator<ApplicationStackParamList>();
 
 function ApplicationNavigator() {

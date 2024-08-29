@@ -55,6 +55,9 @@ const SignUp: React.FC<SignUpProps> = ({ navigation }) => {
     if (!usernameError && !emailError && !passwordError && !confirmPasswordError) {
       navigation.navigate('Home');
       // Handle sign-up logic here
+    } else {
+      // Handle the case where there are validation errors (optional)
+      console.log('Please correct the errors before submitting');
     }
   };
 

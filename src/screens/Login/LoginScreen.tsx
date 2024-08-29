@@ -13,7 +13,7 @@ import Icon7 from '../../theme/assets/icons/food7.png';
 import Icon8 from '../../theme/assets/icons/food8.png';
 import Icon9 from '../../theme/assets/icons/food9.png';
 import Icon10 from '../../theme/assets/icons/food10.png';
-import { usernameValidation } from '../../validation/LoginFormValidation';
+import { usernameValidation, passwordValidation } from '../../validation/LoginFormValidation';
 
 interface LoginProps {
   navigation: any;
@@ -23,15 +23,31 @@ const LoginScreen: React.FC<LoginProps> = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [usernameError, setUsernameError] = useState<string | null>(null);
-
-  const handleLogin = () => {
-    navigation.navigate('Home');
-  };
+  const [passwordError, setPasswordError] = useState<string | null>(null);
 
   const handleUsernameChange = (text: string) => {
     setUsername(text);
     const error = usernameValidation(text);
-    setUsernameError(error); // Update error state
+    setUsernameError(error);
+  };
+
+  const handlePasswordChange = (text: string) => {
+    setPassword(text);
+    const error = passwordValidation(text);
+    setPasswordError(error);
+  };
+
+  const handleLogin = () => {
+    // Validate username and password before logging in
+    const usernameValidationError = usernameValidation(username);
+    const passwordValidationError = passwordValidation(password);
+
+    setUsernameError(usernameValidationError);
+    setPasswordError(passwordValidationError);
+
+    if (!usernameValidationError && !passwordValidationError) {
+      navigation.navigate('Home');
+    }
   };
 
   const images = [
@@ -49,7 +65,6 @@ const LoginScreen: React.FC<LoginProps> = ({ navigation }) => {
 
   const handleSignUp = () => {
     navigation.navigate('SignUp');
-    // Handle sign up logic here
   };
 
   return (
@@ -67,17 +82,18 @@ const LoginScreen: React.FC<LoginProps> = ({ navigation }) => {
           </View>
           <View style={{ height: 60 }} />
           <TextField
-        placeholder="Username"
-        onChangeText={handleUsernameChange}
-        value={username}
-        errorText={usernameError}
-      />
+            placeholder="Username"
+            onChangeText={handleUsernameChange}
+            value={username}
+            errorText={usernameError}
+          />
           <View style={styles.sizedBox} />
           <TextField
             placeholder="Password"
             secureTextEntry
-            onChangeText={setPassword}
+            onChangeText={handlePasswordChange}
             value={password}
+            errorText={passwordError}
           />
           <View style={styles.divider} />
           <CustomButton title="Login" onPress={handleLogin} />
