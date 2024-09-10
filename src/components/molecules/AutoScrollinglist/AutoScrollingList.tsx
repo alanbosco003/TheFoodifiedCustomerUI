@@ -16,10 +16,13 @@ const AutoScrollingList: React.FC<AutoScrollingListProps> = ({ data, onSelectCat
   let isScrolling = useRef(true).current;
 
   const animateScroll = useCallback(() => {
+
     if (!isScrolling) return;
 
     Animated.timing(scrollX, {
       toValue: width * data.length,
+
+      
       duration: (width * data.length) / scrollSpeed * 1000,
       easing: Easing.linear,
       useNativeDriver: true,

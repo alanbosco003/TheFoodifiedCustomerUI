@@ -14,13 +14,18 @@ const ScrollingFoodIcons: React.FC<ScrollingFoodIconsProps> = ({ images }) => {
   const scrollViewRef = useRef<ScrollView>(null);
   const scrollSpeed = 50; // Adjust speed of scrolling
 
+ 
   // Calculate the total width of the scrolling content
   const contentWidth = images.length * 48; // 40px width + 8px marginRight per image
 
   const animateScroll = useCallback(() => {
+
+
+    
+
     Animated.timing(scrollX, {
       toValue: contentWidth, // Scroll to the end
-      duration: (contentWidth) / scrollSpeed * 1000, // Duration based on speed
+      duration: (contentWidth) / scrollSpeed * 123, // Duration based on speed
       easing: Easing.linear,
       useNativeDriver: true,
     }).start(({ finished }) => {
